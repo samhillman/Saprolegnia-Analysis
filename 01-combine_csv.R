@@ -1,5 +1,11 @@
 library(tidyverse) 
+getwd()
 
+home <- getwd()
+####does not work for 25
+###but works for 30 
+##dont know why
+##arrr
 ###25 Degrees Section
 folder25dir <- "raw data\\25degrees"
 setwd(folder25dir)
@@ -7,8 +13,7 @@ temperaturefiles.25 <- list.files(pattern = '*.csv')
 
 #get isolate names
 isolate.names <- gsub(".csv", "", temperaturefiles.25) %>%
-  strsplit("25degrees")   
-##works for list
+  strsplit("25degrees") %>%
   sapply("[[", 2)
 
 listof25degrees <- lapply(temperaturefiles.25, read.csv, header = TRUE)
@@ -19,6 +24,8 @@ combined25degrees <-  do.call(rbind, listof25degrees) %>%
   mutate(temperature = 25)
 
 head(combined25degrees)
+
+setwd(home)
 
 write.csv(combined25degrees, 
           file = "combined data\\25degreescombined.csv", row.names = FALSE)

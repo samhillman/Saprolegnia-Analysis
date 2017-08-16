@@ -1,11 +1,14 @@
 install.packages("lme4")
 library(lme4)
+library(tidyverse)
 
-head(alltempdata)
-str(alltempdata)
+glm.tempdata <- read.csv("cleaned data\\cleaned.tempdata.csv")
+
+head(glm.tempdata)
+str(glm.tempdata)
 
 #add data - actual growth and then growth rate
-alltempdata <- mutate(alltempdata, actualgrowth.mm = totalgrowth.mm - plugarea.mm, 
+glm.tempdata <- mutate(glm.tempdata, actualgrowth.mm = totalgrowth.mm - plugarea.mm, 
                       growthrate = actualgrowth.mm / timepoint)
 
 plot(jitter(alltempdata$temperature), alltempdata$growthrate)
