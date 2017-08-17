@@ -8,23 +8,18 @@ head(glm.tempdata)
 str(glm.tempdata)
 
 #add data - actual growth and then growth rate
+#clean data - filter out where edge has been hit and the contaminated
 glm.tempdata <- mutate(glm.tempdata, actualgrowth.mm = totalgrowth.mm - plugarea.mm, 
-                      growthrate = actualgrowth.mm / timepoint)
+                      growthrate = actualgrowth.mm / timepoint) %>%
+                filter(hit.edge == "no", contaminated == "no") 
 
-plot(jitter(alltempdata$temperature), alltempdata$growthrate)
+head(glm.tempdata)
 
-#changing data for glm analysis
-glmdata <- alltempdata %>%
-  filter(hit.edge == "no", contaminated == "no") 
-head(glmdata)
-
-glmdata$replicate <- as.factor(glmdata$replicate)
-
-temp15 <- subset(glmdata, temperature == 15)
-temp15$replicate <- with(temp15, reorder(replicate, growthrate, median, na.rm=T))
-boxplot(growthrate ~ replicate, data=temp15)
+glm.tempdata$replicate <- as.factor(glm.tempdata$replicate)
 
 temp.model <- lmer(growthrate ~ temperature + (1|isolate/replicate), 
-                   REML = TRUE, data = alltempdata, na.action = na.exclude)
+                   REML = TRUE, data = glm.tempdata, na.action = na.exclude)
 
 summary(temp.model)
+
+
