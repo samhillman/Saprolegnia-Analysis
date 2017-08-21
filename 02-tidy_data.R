@@ -45,10 +45,11 @@ filter(cleaned.tempdata, is.na(cleaned.tempdata$totalgrowth.mm))
 cleaned.tempdata <- filter(cleaned.tempdata, hit.edge == "no", 
                            contaminated == "no") 
 #then write this to csv file for access for future calculations
+######Write cleaned.tempdata.csv
 write.csv(cleaned.tempdata, 
           file = "cleaned data\\cleaned.tempdata.csv", row.names = FALSE)
 
-##### checking work so far
+#####Checking work so far
 #see how many of each temperature point have
 group_by(cleaned.tempdata, temperature) %>%
   summarise(n())
@@ -67,3 +68,13 @@ filter(combined.rawdata, hit.edge == "no", contaminated == "no") %>%
 group_by(cleaned.tempdata, temperature) %>% summarise(n()) == 
     filter(combined.rawdata, hit.edge == "no", contaminated == "no") %>%
     group_by(temperature) %>% summarise(n())
+
+#####Add in time in culture and species isolated from
+daysinculture <- read.csv("raw data//days.in.culture.csv")
+head(daysinculture)
+head(cleaned.tempdata)
+
+cultureinfo.tempdata <- left_join(cleaned.tempdata, daysinculture, by = c("isolate", "temperature"))
+
+write.csv(cultureinfo.tempdata, 
+          file = "cleaned data\\cultureinfo.tempdata.csv", row.names = FALSE)
